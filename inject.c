@@ -42,6 +42,7 @@ int main(int argc, char *argv[]) {
 		printf("Could not open %s for read/write. Are you sure you have permission?\n", targetDev);
 		return 1;
 	}
+	free(targetDev);
 	
 	fread(&mbr, SECTOR_SIZE, 1, fp);
 	
