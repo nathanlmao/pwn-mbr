@@ -9,7 +9,7 @@
 #define MAX_PAYLOAD_LEN 0x1B8
 #define BACKUP_MAGIC "\x13\x37\xd0\x0d"
 
-int main(int argc, char *argv[]) {
+int main() {
 	FILE * fp;
 	FILE * payloadfp;
 	char mbr[SECTOR_SIZE];
